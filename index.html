@@ -1108,16 +1108,10 @@ function generateFiles(){
 }
 
 function saveHTML() {
-  // Bake current reservation data into a fresh copy of the page
-  const script = `\n
-// Preloaded reservations
-data = {"2026":[{"in":"2026-02-04","out":"2026-02-09","guest":"WMPO Guest","rate":20000,"id":"r003"},{"in":"2026-02-11","out":"2026-03-11","guest":"Month Stay Guest","rate":5000,"id":"r004"},{"in":"2026-03-19","out":"2026-03-26","guest":"Guest","rate":10000,"id":"r006"},{"in":"2026-05-07","out":"2026-05-10","guest":"Guest","rate":8000,"id":"r011"},{"in":"2026-06-18","out":"2026-06-21","guest":"Guest","rate":5000,"id":"r013"},{"in":"2026-10-08","out":"2026-10-11","guest":"Guest","rate":8000,"id":"r014"},{"in":"2026-12-22","out":"2026-12-27","guest":"Holiday Guest","rate":15000,"id":"r019"},{"in":"2026-12-29","out":"2027-01-02","guest":"New Years Guest","rate":15000,"id":"r020"},{"in":"2026-01-21","out":"2026-01-27","guest":"Guest","rate":8000,"id":"mow97pin40oa4p8izrp"},{"in":"2026-01-15","out":"2026-01-19","guest":"Guest","rate":10000,"id":"mow988frtl0k4my7zuf"},{"in":"2026-03-12","out":"2026-03-16","guest":"Guest","rate":12000,"id":"mow9eun77m21p353s4s"},{"in":"2026-03-27","out":"2026-03-30","guest":"Guest","rate":12000,"id":"mow9fsl4duv9t7op0vs"},{"in":"2026-04-02","out":"2026-04-07","guest":"Guest","rate":10000,"id":"mow9gumsg961rfct87m"},{"in":"2026-04-24","out":"2026-04-28","guest":"Guest","rate":8000,"id":"mow9hhfri4tmg6xl75a"},{"in":"2026-10-21","out":"2026-10-26","guest":"Guest","rate":6000,"id":"mow9iixrobaniq7l3n"},{"in":"2026-11-05","out":"2026-11-09","guest":"Guest","rate":8000,"id":"mow9l70jq36xqf7db8"},{"in":"2026-11-24","out":"2026-11-29","guest":"Thanksgiving Guest","rate":12000,"id":"mow9mjpvtfywt8z03tk"},{"in":"2026-12-05","out":"2026-12-12","guest":"Guest","rate":6000,"id":"mow9n3z94fx2ec4l5yx"}]};
-render();
-\n`;
-  let html = document.documentElement.outerHTML;
-  // Replace the existing preloaded block + render() with current data
-  html = html.replace(/\/\/ Preloaded reservations[\s\S]*?render\(\);/, script);
-  const blob = new Blob(['<!DOCTYPE html>\n' + html], { type: 'text/html;charset=utf-8' });
+  const sentinel = document.getElementById('saved-data');
+  sentinel.textContent = '\ndata = ' + JSON.stringify(data) + ';\nrender();\n';
+  const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = 'Valley_Vista_Reservation_Builder.html';
@@ -1125,32 +1119,13 @@ render();
   URL.revokeObjectURL(a.href);
 }
 
-// Preloaded reservations
-data['2026'] = [
-  {in:'2026-01-15',out:'2026-01-19',guest:'Guest',rate:12000,id:'r001'},
-  {in:'2026-01-21',out:'2026-01-28',guest:'Guest',rate:10000,id:'r002'},
-  {in:'2026-02-04',out:'2026-02-09',guest:'WMPO Guest',rate:20000,id:'r003'},
-  {in:'2026-02-11',out:'2026-03-11',guest:'Month Stay Guest',rate:5000,id:'r004'},
-  {in:'2026-03-12',out:'2026-03-16',guest:'Guest',rate:15000,id:'r005'},
-  {in:'2026-03-19',out:'2026-03-26',guest:'Guest',rate:10000,id:'r006'},
-  {in:'2026-03-27',out:'2026-03-30',guest:'Guest',rate:18000,id:'r007'},
-  {in:'2026-04-02',out:'2026-04-07',guest:'Guest',rate:15000,id:'r008'},
-  {in:'2026-04-09',out:'2026-04-12',guest:'Guest',rate:15000,id:'r009'},
-  {in:'2026-04-24',out:'2026-04-28',guest:'Guest',rate:12000,id:'r010'},
-  {in:'2026-05-07',out:'2026-05-10',guest:'Guest',rate:8000,id:'r011'},
-  {in:'2026-05-28',out:'2026-05-31',guest:'Guest',rate:6000,id:'r012'},
-  {in:'2026-06-18',out:'2026-06-21',guest:'Guest',rate:5000,id:'r013'},
-  {in:'2026-10-08',out:'2026-10-11',guest:'Guest',rate:8000,id:'r014'},
-  {in:'2026-10-21',out:'2026-10-27',guest:'Guest',rate:8000,id:'r015'},
-  {in:'2026-11-05',out:'2026-11-09',guest:'Guest',rate:10000,id:'r016'},
-  {in:'2026-11-23',out:'2026-11-30',guest:'Thanksgiving',rate:12000,id:'r017'},
-  {in:'2026-12-01',out:'2026-12-15',guest:'Guest',rate:6000,id:'r018'},
-  {in:'2026-12-22',out:'2026-12-27',guest:'Holiday Guest',rate:15000,id:'r019'},
-  {in:'2026-12-29',out:'2027-01-02',guest:'New Years Guest',rate:15000,id:'r020'},
-];
-
 render();
 </script>
 
-
-</body></html>
+<!-- SAVE_DATA_SENTINEL -->
+<script id="saved-data">
+data = {"2026":[{"in":"2026-02-04","out":"2026-02-09","guest":"WMPO Guest","rate":20000,"id":"r003"},{"in":"2026-02-11","out":"2026-03-11","guest":"Month Stay Guest","rate":5000,"id":"r004"},{"in":"2026-03-19","out":"2026-03-26","guest":"Guest","rate":10000,"id":"r006"},{"in":"2026-05-07","out":"2026-05-10","guest":"Guest","rate":8000,"id":"r011"},{"in":"2026-06-18","out":"2026-06-21","guest":"Guest","rate":5000,"id":"r013"},{"in":"2026-10-08","out":"2026-10-11","guest":"Guest","rate":8000,"id":"r014"},{"in":"2026-12-22","out":"2026-12-27","guest":"Holiday Guest","rate":15000,"id":"r019"},{"in":"2026-12-29","out":"2027-01-02","guest":"New Years Guest","rate":15000,"id":"r020"},{"in":"2026-01-21","out":"2026-01-27","guest":"Guest","rate":8000,"id":"mow97pin40oa4p8izrp"},{"in":"2026-01-15","out":"2026-01-19","guest":"Guest","rate":10000,"id":"mow988frtl0k4my7zuf"},{"in":"2026-03-12","out":"2026-03-16","guest":"Guest","rate":12000,"id":"mow9eun77m21p353s4s"},{"in":"2026-03-27","out":"2026-03-30","guest":"Guest","rate":12000,"id":"mow9fsl4duv9t7op0vs"},{"in":"2026-04-02","out":"2026-04-07","guest":"Guest","rate":10000,"id":"mow9gumsg961rfct87m"},{"in":"2026-04-24","out":"2026-04-28","guest":"Guest","rate":8000,"id":"mow9hhfri4tmg6xl75a"},{"in":"2026-10-21","out":"2026-10-26","guest":"Guest","rate":6000,"id":"mow9iixrobaniq7l3n"},{"in":"2026-11-05","out":"2026-11-09","guest":"Guest","rate":8000,"id":"mow9l70jq36xqf7db8"},{"in":"2026-11-24","out":"2026-11-29","guest":"Thanksgiving Guest","rate":12000,"id":"mow9mjpvtfywt8z03tk"},{"in":"2026-12-05","out":"2026-12-12","guest":"Guest","rate":6000,"id":"mow9n3z94fx2ec4l5yx"}]};
+render();
+</script>
+</body>
+</html>
