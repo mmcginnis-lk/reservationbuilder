@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valley Vista — Reservation Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&amp;family=DM+Sans:wght@300;400;500&amp;display=swap" rel="stylesheet">
+<style>
+  :root {
+    --terra: #CB7D5F;
+    --terra-dark: #A05E42;
+    --terra-deep: #7A4530;
+    --terra-light: #E8C4B0;
+    --terra-pale: #F5EDE8;
+    --cream: #F2EBDC;
+    --cream-dark: #E4D9C6;
+    --warm-gray: #8C8070;
+    --warm-gray-light: #C4BAB0;
+    --ink: #2A2118;
+    --ink-soft: #5A4E44;
+    --white: #FFFDF9;
+    --border: rgba(160,94,66,0.15);
+    --border-strong: rgba(160,94,66,0.3);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ── Page shell ── */
+  .page { max-width: 1400px; margin: 0 auto; padding: 0 40px 80px; }
+
+  /* ── Header ── */
+  .site-header {
+    background: var(--terra);
+    margin: 0 -32px;
+    padding: 28px 32px 26px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo-lockup { display: flex; align-items: center; gap: 14px; }
+  .logo-mark {
+    width: 42px; height: 42px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .logo-mark svg { width: 22px; height: 22px; }
+  .logo-text { color: white; }
+  .logo-text .wordmark {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    line-height: 1;
+  }
+  .logo-text .tagline {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-top: 3px;
+  }
+  .header-right { display: flex; align-items: center; gap: 20px; }
+  .prop-label {
+    color: rgba(255,255,255,0.85);
+    font-size: 13px;
+    text-align: right;
+    line-height: 1.4;
+  }
+  .prop-label strong { color: white; display: block; font-size: 15px; font-weight: 500; }
+
+  /* ── Year nav ── */
+  .year-bar {
+    background: var(--terra-dark);
+    margin: 0 -32px;
+    padding: 10px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .year-nav { display: flex; align-items: center; gap: 14px; }
+  .yr-btn {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    width: 28px; height: 28px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s;
+  }
+  .yr-btn:hover { background: rgba(255,255,255,0.22); }
+  .yr-display {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    color: white;
+    font-weight: 400;
+    min-width: 60px;
+    text-align: center;
+  }
+  .export-group { display: flex; gap: 8px; }
+  .exp-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 14px;
+    border-radius: 5px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: 1px solid rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.1);
+    color: white;
+  }
+  .exp-btn:hover { background: rgba(255,255,255,0.2); }
+  .exp-btn.primary {
+    background: white;
+    color: var(--terra-dark);
+    border-color: white;
+  }
+  .exp-btn.primary:hover { background: var(--cream); }
+  .exp-btn svg { width: 14px; height: 14px; }
+
+  /* ── KPI strip ── */
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 28px 0 24px;
+  }
+  .kpi {
+    background: var(--white);
+    padding: 18px 20px;
+  }
+  .kpi-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    margin-bottom: 6px;
+  }
+  .kpi-val {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 30px;
+    font-weight: 500;
+    color: var(--terra-dark);
+    line-height: 1;
+  }
+
+  /* ── Month tabs ── */
+  .month-tabs {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 6px;
+    margin-bottom: 24px;
+  }
+  .mo-tab {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .mo-tab:hover { border-color: var(--terra-light); }
+  .mo-tab.active {
+    border-color: var(--terra);
+    background: var(--terra-pale);
+  }
+  .mo-tab-name {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    margin-bottom: 3px;
+  }
+  .mo-tab.active .mo-tab-name { color: var(--terra-dark); }
+  .mo-tab-rev {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--terra);
+    line-height: 1;
+  }
+  .mo-tab-nts { font-size: 10px; color: var(--warm-gray); margin-top: 2px; }
+
+  /* ── Main layout ── */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 24px;
+    align-items: start;
+  }
+
+  /* ── Calendar ── */
+  .cal-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .cal-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .cal-month-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--ink);
+  }
+  .cal-hint { font-size: 11px; color: var(--warm-gray); }
+  .cal-body { padding: 16px 20px 20px; }
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 3px;
+  }
+  .cal-dh {
+    text-align: center;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    padding: 4px 0 8px;
+    font-weight: 500;
+  }
+  .cal-day {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    min-height: 88px;
+    padding: 6px 8px;
+    cursor: pointer;
+    background: var(--white);
+    transition: border-color 0.12s;
+    position: relative;
+  }
+  .cal-day:hover { border-color: var(--terra-light); }
+  .cal-day.empty { background: transparent; border-color: transparent; cursor: default; }
+  .cal-day.booked { background: var(--terra-pale); border-color: var(--terra-light); }
+  .cal-day.owner-block { background: #F5F3F0; border-color: #DDD8D2; }
+  .cal-dn { font-size: 13px; color: var(--warm-gray); font-weight: 500; }
+  .cal-day.booked .cal-dn { color: var(--terra-dark); }
+  .cal-chip {
+    margin-top: 3px;
+    font-size: 9.5px;
+    font-weight: 500;
+    background: var(--terra);
+    color: white;
+    border-radius: 3px;
+    padding: 1px 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .cal-chip.owner { background: var(--warm-gray); }
+  .cal-rate { font-size: 9px; color: var(--terra-dark); margin-top: 2px; }
+
+  /* ── Sidebar ── */
+  .sidebar { display: flex; flex-direction: column; gap: 16px; }
+
+  .form-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .card-head {
+    padding: 14px 18px;
+    background: var(--terra-pale);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-head svg { width: 15px; height: 15px; color: var(--terra); }
+  .card-head-title {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--terra-dark);
+  }
+  .card-body { padding: 16px 18px; }
+
+  .field { margin-bottom: 12px; }
+  .field label {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    margin-bottom: 5px;
+    font-weight: 500;
+  }
+  .field input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    background: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .field input:focus { border-color: var(--terra); }
+  .field input::placeholder { color: var(--warm-gray-light); }
+
+  .add-btn {
+    width: 100%;
+    padding: 10px;
+    background: var(--terra);
+    color: white;
+    border: none;
+    border-radius: 7px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s;
+    margin-top: 4px;
+  }
+  .add-btn:hover { background: var(--terra-dark); }
+
+  /* ── Reservation list ── */
+  .res-list { max-height: 320px; overflow-y: auto; }
+  .res-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .res-item:last-child { border-bottom: none; }
+  .res-dot {
+    width: 8px; height: 8px;
+    background: var(--terra);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .res-dot.owner { background: var(--warm-gray-light); }
+  .res-meta { flex: 1; min-width: 0; }
+  .res-guest {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .res-dates { font-size: 10px; color: var(--warm-gray); margin-top: 1px; }
+  .res-amount {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--terra-dark);
+    white-space: nowrap;
+  }
+  .del-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--warm-gray-light);
+    font-size: 16px;
+    line-height: 1;
+    padding: 2px 4px;
+    border-radius: 3px;
+    transition: color 0.12s;
+    flex-shrink: 0;
+  }
+  .del-btn:hover { color: #c0392b; }
+  .empty-msg { font-size: 12px; color: var(--warm-gray); text-align: center; padding: 20px 0; font-style: italic; }
+
+  /* ── Annual bar chart ── */
+  .annual-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-top: 20px;
+  }
+  .annual-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 16px;
+  }
+  .annual-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    font-weight: 400;
+    color: var(--ink);
+  }
+  .annual-total {
+    font-size: 12px;
+    color: var(--warm-gray);
+  }
+  .bar-chart {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 4px;
+    align-items: end;
+    height: 72px;
+  }
+  .bar-col { display: flex; flex-direction: column; align-items: center; gap: 0; }
+  .bar-fill {
+    width: 100%;
+    background: var(--terra);
+    border-radius: 3px 3px 0 0;
+    min-height: 2px;
+    transition: height 0.4s ease;
+  }
+  .bar-fill.empty { background: var(--cream-dark); min-height: 3px; }
+  .bar-month-labels {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 4px;
+    margin-top: 6px;
+  }
+  .bml { text-align: center; font-size: 9px; color: var(--warm-gray); letter-spacing: 0.03em; }
+
+  /* ── Print styles ── */
+  @media print {
+    body { background: white; }
+    .page { padding: 0; max-width: 100%; }
+    .site-header, .year-bar { margin: 0; }
+    .exp-btn, .del-btn, .form-card, .add-btn { display: none !important; }
+    .main-grid { grid-template-columns: 1fr; }
+    .cal-card, .annual-card, .kpi-strip, .month-tabs { break-inside: avoid; }
+    .res-list { max-height: none; overflow: visible; }
+  }
+
+  @media (max-width: 800px) {
+    .main-grid { grid-template-columns: 1fr; }
+    .month-tabs { grid-template-columns: repeat(4, 1fr); }
+    .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="logo-lockup">
+      <div class="logo-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"></path>
+          <path d="M9 21V12h6v9"></path>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <div class="wordmark">luxekey</div>
+        <div class="tagline">Vacation Rentals</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="prop-label">
+        <strong>Reservation Builder</strong>
+      </div>
+    </div>
+  </header>
+
+  <!-- Year bar + exports -->
+  <div class="year-bar">
+    <div class="year-nav">
+      <button class="yr-btn" onclick="changeYear(-1)">←</button>
+      <div class="yr-display" id="yr-display">2026</div>
+      <button class="yr-btn" onclick="changeYear(1)">→</button>
+    </div>
+    <div class="export-group">
+      <button class="exp-btn" onclick="exportCSV()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+        Export CSV
+      </button>
+      <button class="exp-btn" onclick="saveHTML()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Save HTML
+      </button>
+      <button class="exp-btn" onclick="window.print()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+        Print / Save PDF
+      </button>
+      <button class="exp-btn primary" onclick="generateFiles()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Generate PDF + Excel ↗
+      </button>
+    </div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpi-strip">
+    <div class="kpi"><div class="kpi-label">Annual Revenue</div><div class="kpi-val" id="k-rev">$916,000</div></div>
+    <div class="kpi"><div class="kpi-label">Occupied Nights</div><div class="kpi-val" id="k-nts">105</div></div>
+    <div class="kpi"><div class="kpi-label">Occupancy Rate</div><div class="kpi-val" id="k-occ">29%</div></div>
+    <div class="kpi"><div class="kpi-label">Avg. Nightly Rate</div><div class="kpi-val" id="k-adr">$8,724</div></div>
+  </div>
+
+  <!-- Month tabs -->
+  <div class="month-tabs" id="month-tabs"><div class="mo-tab" onclick="month=0;render()">
+      <div class="mo-tab-name">January</div>
+      <div class="mo-tab-rev">$88,000</div>
+      <div class="mo-tab-nts">10 nts</div>
+    </div><div class="mo-tab" onclick="month=1;render()">
+      <div class="mo-tab-name">February</div>
+      <div class="mo-tab-rev">$190,000</div>
+      <div class="mo-tab-nts">23 nts</div>
+    </div><div class="mo-tab" onclick="month=2;render()">
+      <div class="mo-tab-name">March</div>
+      <div class="mo-tab-rev">$209,000</div>
+      <div class="mo-tab-nts">25 nts</div>
+    </div><div class="mo-tab" onclick="month=3;render()">
+      <div class="mo-tab-name">April</div>
+      <div class="mo-tab-rev">$82,000</div>
+      <div class="mo-tab-nts">9 nts</div>
+    </div><div class="mo-tab" onclick="month=4;render()">
+      <div class="mo-tab-name">May</div>
+      <div class="mo-tab-rev">$24,000</div>
+      <div class="mo-tab-nts">3 nts</div>
+    </div><div class="mo-tab" onclick="month=5;render()">
+      <div class="mo-tab-name">June</div>
+      <div class="mo-tab-rev">$15,000</div>
+      <div class="mo-tab-nts">3 nts</div>
+    </div><div class="mo-tab" onclick="month=6;render()">
+      <div class="mo-tab-name">July</div>
+      <div class="mo-tab-rev">—</div>
+      <div class="mo-tab-nts">0 nts</div>
+    </div><div class="mo-tab" onclick="month=7;render()">
+      <div class="mo-tab-name">August</div>
+      <div class="mo-tab-rev">—</div>
+      <div class="mo-tab-nts">0 nts</div>
+    </div><div class="mo-tab" onclick="month=8;render()">
+      <div class="mo-tab-name">September</div>
+      <div class="mo-tab-rev">—</div>
+      <div class="mo-tab-nts">0 nts</div>
+    </div><div class="mo-tab" onclick="month=9;render()">
+      <div class="mo-tab-name">October</div>
+      <div class="mo-tab-rev">$54,000</div>
+      <div class="mo-tab-nts">8 nts</div>
+    </div><div class="mo-tab" onclick="month=10;render()">
+      <div class="mo-tab-name">November</div>
+      <div class="mo-tab-rev">$92,000</div>
+      <div class="mo-tab-nts">9 nts</div>
+    </div><div class="mo-tab active" onclick="month=11;render()">
+      <div class="mo-tab-name">December</div>
+      <div class="mo-tab-rev">$162,000</div>
+      <div class="mo-tab-nts">15 nts</div>
+    </div></div>
+
+  <!-- Main grid -->
+  <div class="main-grid">
+
+    <!-- Calendar -->
+    <div>
+      <div class="cal-card">
+        <div class="cal-header">
+          <div class="cal-month-title" id="cal-title">December 2026</div>
+          <div class="cal-hint">Click a day to pre-fill check-in</div>
+        </div>
+        <div class="cal-body">
+          <div class="cal-grid" id="cal-grid"><div class="cal-dh">Sun</div><div class="cal-dh">Mon</div><div class="cal-dh">Tue</div><div class="cal-dh">Wed</div><div class="cal-dh">Thu</div><div class="cal-dh">Fri</div><div class="cal-dh">Sat</div><div class="cal-day empty"></div><div class="cal-day empty"></div><div class="cal-day " onclick="clickDay(1)">
+      <div class="cal-dn">1</div>
+      
+      
+    </div><div class="cal-day " onclick="clickDay(2)">
+      <div class="cal-dn">2</div>
+      
+      
+    </div><div class="cal-day " onclick="clickDay(3)">
+      <div class="cal-dn">3</div>
+      
+      
+    </div><div class="cal-day " onclick="clickDay(4)">
+      <div class="cal-dn">4</div>
+      
+      
+    </div><div class="cal-day booked" onclick="clickDay(5)">
+      <div class="cal-dn">5</div>
+      <div class="cal-chip">Guest</div>
+      <div class="cal-rate">$6,000/nt</div>
+    </div><div class="cal-day booked" onclick="clickDay(6)">
+      <div class="cal-dn">6</div>
+      <div class="cal-chip">Guest</div>
+      <div class="cal-rate">$6,000/nt</div>
+    </div><div class="cal-day booked" onclick="clickDay(7)">
+      <div class="cal-dn">7</div>
+      <div class="cal-chip">Guest</div>
+      <div class="cal-rate">$6,000/nt</div>
+    </div><div class="cal-day booked" onclick="clickDay(8)">
+      <div class="cal-dn">8</div>
+      <div class="cal-chip">Guest</div>
+      <div class="cal-rate">$6,000/nt</div>
+    </div><div class="cal-day booked" onclick="clickDay(9)">
+      <div class="cal-dn">9</div>
+      <div class="cal-chip">Guest</div>
+      <div class="cal-rate">$6,000/nt</div>
+    </div><div class="cal-day booked" onclick="clickDay(10)">
+      <div class="cal-dn">10</div>
+      <div class="cal-chip">Guest</div>
+      <div class="cal-rate">$6,000/nt</div>
+    </div><div class="cal-day booked" onclick="clickDay(11)">
+      <div class="cal-dn">11</div>
+      <div class="cal-chip">Guest</div>
+      <div class="cal-rate">$6,000/nt</div>
+    </div><div class="cal-day " onclick="clickDay(12)">
+      <div class="cal-dn">12</div>
+      
+      
+    </div><div class="cal-day " onclick="clickDay(13)">
+      <div class="cal-dn">13</div>
+      
+      
+    </div><div class="cal-day " onclick="clickDay(14)">
+      <div class="cal-dn">14</div>
+      
+      
+    </div><div class="cal-day " onclick="clickDay(15)">
+      <div class="cal-dn">15</div>
+      
+      
+    </div><div class="cal-day " onclick="clickDay(16)">
+      <div class="cal-dn">16</div>
+      
+      
+    </div><div class="cal-day " onclick="clickDay(17)">
+      <div class="cal-dn">17</div>
+      
+      
+    </div><div class="cal-day " onclick="clickDay(18)">
+      <div class="cal-dn">18</div>
+      
+      
+    </div><div class="cal-day " onclick="clickDay(19)">
+      <div class="cal-dn">19</div>
+      
+      
+    </div><div class="cal-day " onclick="clickDay(20)">
+      <div class="cal-dn">20</div>
+      
+      
+    </div><div class="cal-day " onclick="clickDay(21)">
+      <div class="cal-dn">21</div>
+      
+      
+    </div><div class="cal-day booked" onclick="clickDay(22)">
+      <div class="cal-dn">22</div>
+      <div class="cal-chip">Holiday</div>
+      <div class="cal-rate">$15,000/nt</div>
+    </div><div class="cal-day booked" onclick="clickDay(23)">
+      <div class="cal-dn">23</div>
+      <div class="cal-chip">Holiday</div>
+      <div class="cal-rate">$15,000/nt</div>
+    </div><div class="cal-day booked" onclick="clickDay(24)">
+      <div class="cal-dn">24</div>
+      <div class="cal-chip">Holiday</div>
+      <div class="cal-rate">$15,000/nt</div>
+    </div><div class="cal-day booked" onclick="clickDay(25)">
+      <div class="cal-dn">25</div>
+      <div class="cal-chip">Holiday</div>
+      <div class="cal-rate">$15,000/nt</div>
+    </div><div class="cal-day booked" onclick="clickDay(26)">
+      <div class="cal-dn">26</div>
+      <div class="cal-chip">Holiday</div>
+      <div class="cal-rate">$15,000/nt</div>
+    </div><div class="cal-day " onclick="clickDay(27)">
+      <div class="cal-dn">27</div>
+      
+      
+    </div><div class="cal-day " onclick="clickDay(28)">
+      <div class="cal-dn">28</div>
+      
+      
+    </div><div class="cal-day booked" onclick="clickDay(29)">
+      <div class="cal-dn">29</div>
+      <div class="cal-chip">New</div>
+      <div class="cal-rate">$15,000/nt</div>
+    </div><div class="cal-day booked" onclick="clickDay(30)">
+      <div class="cal-dn">30</div>
+      <div class="cal-chip">New</div>
+      <div class="cal-rate">$15,000/nt</div>
+    </div><div class="cal-day booked" onclick="clickDay(31)">
+      <div class="cal-dn">31</div>
+      <div class="cal-chip">New</div>
+      <div class="cal-rate">$15,000/nt</div>
+    </div></div>
+        </div>
+      </div>
+
+      <!-- Annual bar -->
+      <div class="annual-card">
+        <div class="annual-head">
+          <div class="annual-title">Annual revenue overview</div>
+          <div class="annual-total" id="annual-total">Total: $916,000</div>
+        </div>
+        <div class="bar-chart" id="bar-chart"><div class="bar-col" style="align-self:end">
+      <div class="bar-fill" style="height:29px"></div>
+    </div><div class="bar-col" style="align-self:end">
+      <div class="bar-fill" style="height:62px"></div>
+    </div><div class="bar-col" style="align-self:end">
+      <div class="bar-fill" style="height:68px"></div>
+    </div><div class="bar-col" style="align-self:end">
+      <div class="bar-fill" style="height:27px"></div>
+    </div><div class="bar-col" style="align-self:end">
+      <div class="bar-fill" style="height:8px"></div>
+    </div><div class="bar-col" style="align-self:end">
+      <div class="bar-fill" style="height:5px"></div>
+    </div><div class="bar-col" style="align-self:end">
+      <div class="bar-fill empty" style="height:3px"></div>
+    </div><div class="bar-col" style="align-self:end">
+      <div class="bar-fill empty" style="height:3px"></div>
+    </div><div class="bar-col" style="align-self:end">
+      <div class="bar-fill empty" style="height:3px"></div>
+    </div><div class="bar-col" style="align-self:end">
+      <div class="bar-fill" style="height:18px"></div>
+    </div><div class="bar-col" style="align-self:end">
+      <div class="bar-fill" style="height:30px"></div>
+    </div><div class="bar-col" style="align-self:end">
+      <div class="bar-fill" style="height:53px"></div>
+    </div></div>
+        <div class="bar-month-labels" id="bar-labels"><div class="bml">Jan</div><div class="bml">Feb</div><div class="bml">Mar</div><div class="bml">Apr</div><div class="bml">May</div><div class="bml">Jun</div><div class="bml">Jul</div><div class="bml">Aug</div><div class="bml">Sep</div><div class="bml">Oct</div><div class="bml">Nov</div><div class="bml">Dec</div></div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+
+      <!-- Add form -->
+      <div class="form-card">
+        <div class="card-head">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          <span class="card-head-title">Add Reservation</span>
+        </div>
+        <div class="card-body">
+          <div class="field"><label>Check-In</label><input type="date" id="f-in"></div>
+          <div class="field"><label>Check-Out</label><input type="date" id="f-out"></div>
+          <div class="field"><label>Guest Name</label><input type="text" id="f-guest" placeholder="Guest or owner name"></div>
+          <div class="field"><label>Nightly Rate ($) — blank = owner block</label><input type="number" id="f-rate" placeholder="e.g. 750" min="0"></div>
+          <button class="add-btn" onclick="addRes()">Add Reservation</button>
+        </div>
+      </div>
+
+      <!-- Reservation list -->
+      <div class="form-card">
+        <div class="card-head">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+          <span class="card-head-title">Reservations — <span id="res-yr-lbl" style="font-weight:300;text-transform:none;letter-spacing:0">2026</span></span>
+        </div>
+        <div class="card-body" style="padding:0 18px">
+          <div class="res-list" id="res-list"><div class="res-item">
+      <div class="res-dot"></div>
+      <div class="res-meta">
+        <div class="res-guest">Guest</div>
+        <div class="res-dates">01/15 → 01/19 · 4 nights</div>
+      </div>
+      <div class="res-amount">$40,000</div>
+      <button class="del-btn" onclick="deleteRes('mow988frtl0k4my7zuf')" title="Remove">×</button>
+    </div><div class="res-item">
+      <div class="res-dot"></div>
+      <div class="res-meta">
+        <div class="res-guest">Guest</div>
+        <div class="res-dates">01/21 → 01/27 · 6 nights</div>
+      </div>
+      <div class="res-amount">$48,000</div>
+      <button class="del-btn" onclick="deleteRes('mow97pin40oa4p8izrp')" title="Remove">×</button>
+    </div><div class="res-item">
+      <div class="res-dot"></div>
+      <div class="res-meta">
+        <div class="res-guest">WMPO Guest</div>
+        <div class="res-dates">02/04 → 02/09 · 5 nights</div>
+      </div>
+      <div class="res-amount">$100,000</div>
+      <button class="del-btn" onclick="deleteRes('r003')" title="Remove">×</button>
+    </div><div class="res-item">
+      <div class="res-dot"></div>
+      <div class="res-meta">
+        <div class="res-guest">Month Stay Guest</div>
+        <div class="res-dates">02/11 → 03/11 · 28 nights</div>
+      </div>
+      <div class="res-amount">$140,000</div>
+      <button class="del-btn" onclick="deleteRes('r004')" title="Remove">×</button>
+    </div><div class="res-item">
+      <div class="res-dot"></div>
+      <div class="res-meta">
+        <div class="res-guest">Guest</div>
+        <div class="res-dates">03/12 → 03/16 · 4 nights</div>
+      </div>
+      <div class="res-amount">$48,000</div>
+      <button class="del-btn" onclick="deleteRes('mow9eun77m21p353s4s')" title="Remove">×</button>
+    </div><div class="res-item">
+      <div class="res-dot"></div>
+      <div class="res-meta">
+        <div class="res-guest">Guest</div>
+        <div class="res-dates">03/19 → 03/26 · 7 nights</div>
+      </div>
+      <div class="res-amount">$70,000</div>
+      <button class="del-btn" onclick="deleteRes('r006')" title="Remove">×</button>
+    </div><div class="res-item">
+      <div class="res-dot"></div>
+      <div class="res-meta">
+        <div class="res-guest">Guest</div>
+        <div class="res-dates">03/27 → 03/30 · 3 nights</div>
+      </div>
+      <div class="res-amount">$36,000</div>
+      <button class="del-btn" onclick="deleteRes('mow9fsl4duv9t7op0vs')" title="Remove">×</button>
+    </div><div class="res-item">
+      <div class="res-dot"></div>
+      <div class="res-meta">
+        <div class="res-guest">Guest</div>
+        <div class="res-dates">04/02 → 04/07 · 5 nights</div>
+      </div>
+      <div class="res-amount">$50,000</div>
+      <button class="del-btn" onclick="deleteRes('mow9gumsg961rfct87m')" title="Remove">×</button>
+    </div><div class="res-item">
+      <div class="res-dot"></div>
+      <div class="res-meta">
+        <div class="res-guest">Guest</div>
+        <div class="res-dates">04/24 → 04/28 · 4 nights</div>
+      </div>
+      <div class="res-amount">$32,000</div>
+      <button class="del-btn" onclick="deleteRes('mow9hhfri4tmg6xl75a')" title="Remove">×</button>
+    </div><div class="res-item">
+      <div class="res-dot"></div>
+      <div class="res-meta">
+        <div class="res-guest">Guest</div>
+        <div class="res-dates">05/07 → 05/10 · 3 nights</div>
+      </div>
+      <div class="res-amount">$24,000</div>
+      <button class="del-btn" onclick="deleteRes('r011')" title="Remove">×</button>
+    </div><div class="res-item">
+      <div class="res-dot"></div>
+      <div class="res-meta">
+        <div class="res-guest">Guest</div>
+        <div class="res-dates">06/18 → 06/21 · 3 nights</div>
+      </div>
+      <div class="res-amount">$15,000</div>
+      <button class="del-btn" onclick="deleteRes('r013')" title="Remove">×</button>
+    </div><div class="res-item">
+      <div class="res-dot"></div>
+      <div class="res-meta">
+        <div class="res-guest">Guest</div>
+        <div class="res-dates">10/08 → 10/11 · 3 nights</div>
+      </div>
+      <div class="res-amount">$24,000</div>
+      <button class="del-btn" onclick="deleteRes('r014')" title="Remove">×</button>
+    </div><div class="res-item">
+      <div class="res-dot"></div>
+      <div class="res-meta">
+        <div class="res-guest">Guest</div>
+        <div class="res-dates">10/21 → 10/26 · 5 nights</div>
+      </div>
+      <div class="res-amount">$30,000</div>
+      <button class="del-btn" onclick="deleteRes('mow9iixrobaniq7l3n')" title="Remove">×</button>
+    </div><div class="res-item">
+      <div class="res-dot"></div>
+      <div class="res-meta">
+        <div class="res-guest">Guest</div>
+        <div class="res-dates">11/05 → 11/09 · 4 nights</div>
+      </div>
+      <div class="res-amount">$32,000</div>
+      <button class="del-btn" onclick="deleteRes('mow9l70jq36xqf7db8')" title="Remove">×</button>
+    </div><div class="res-item">
+      <div class="res-dot"></div>
+      <div class="res-meta">
+        <div class="res-guest">Thanksgiving Guest</div>
+        <div class="res-dates">11/24 → 11/29 · 5 nights</div>
+      </div>
+      <div class="res-amount">$60,000</div>
+      <button class="del-btn" onclick="deleteRes('mow9mjpvtfywt8z03tk')" title="Remove">×</button>
+    </div><div class="res-item">
+      <div class="res-dot"></div>
+      <div class="res-meta">
+        <div class="res-guest">Guest</div>
+        <div class="res-dates">12/05 → 12/12 · 7 nights</div>
+      </div>
+      <div class="res-amount">$42,000</div>
+      <button class="del-btn" onclick="deleteRes('mow9n3z94fx2ec4l5yx')" title="Remove">×</button>
+    </div><div class="res-item">
+      <div class="res-dot"></div>
+      <div class="res-meta">
+        <div class="res-guest">Holiday Guest</div>
+        <div class="res-dates">12/22 → 12/27 · 5 nights</div>
+      </div>
+      <div class="res-amount">$75,000</div>
+      <button class="del-btn" onclick="deleteRes('r019')" title="Remove">×</button>
+    </div><div class="res-item">
+      <div class="res-dot"></div>
+      <div class="res-meta">
+        <div class="res-guest">New Years Guest</div>
+        <div class="res-dates">12/29 → 01/02 · 4 nights</div>
+      </div>
+      <div class="res-amount">$60,000</div>
+      <button class="del-btn" onclick="deleteRes('r020')" title="Remove">×</button>
+    </div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const MSHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MDAYS  = [31,28,31,30,31,30,31,31,30,31,30,31];
+const DAYS   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+let year = 2026, month = 0;
+let data = {};
+
+function getList(y){ return data[String(y)] || []; }
+function setList(y,arr){ data[String(y)] = arr; }
+
+function nights(r){
+  return Math.round((new Date(r.out+'T12:00:00') - new Date(r.in+'T12:00:00')) / 86400000);
+}
+function revenue(r){ return r.rate ? nights(r) * r.rate : 0; }
+function isOwner(r){ return !r.rate || r.rate === 0; }
+
+function monthStats(y, m){
+  const d1 = new Date(y, m, 1), d2 = new Date(y, m+1, 1);
+  let rev = 0, nts = 0;
+  getList(y).forEach(r => {
+    if(isOwner(r)) return;
+    const ci = new Date(r.in+'T12:00:00'), co = new Date(r.out+'T12:00:00');
+    const s = ci < d1 ? d1 : ci, e = co > d2 ? d2 : co;
+    if(s < e){ const n = Math.round((e-s)/86400000); nts += n; rev += n * r.rate; }
+  });
+  return {rev, nts};
+}
+
+function yearStats(y){
+  let rev = 0, nts = 0;
+  for(let m=0; m<12; m++){ const s=monthStats(y,m); rev+=s.rev; nts+=s.nts; }
+  return {rev, nts, occ: nts/365, adr: nts>0 ? rev/nts : 0};
+}
+
+function getDayRes(y, m, d){
+  const dt = new Date(y, m, d, 12, 0, 0);
+  return getList(y).filter(r => {
+    const ci = new Date(r.in+'T12:00:00'), co = new Date(r.out+'T12:00:00');
+    return dt >= ci && dt < co;
+  });
+}
+
+function fmt$(n){ return '$' + Math.round(n).toLocaleString(); }
+
+function render(){
+  document.getElementById('yr-display').textContent = year;
+  document.getElementById('res-yr-lbl').textContent = year;
+  document.getElementById('cal-title').textContent = MONTHS[month] + ' ' + year;
+  renderKPIs();
+  renderMonthTabs();
+  renderCal();
+  renderResList();
+  renderAnnual();
+}
+
+function renderKPIs(){
+  const s = yearStats(year);
+  document.getElementById('k-rev').textContent = fmt$(s.rev);
+  document.getElementById('k-nts').textContent = s.nts;
+  document.getElementById('k-occ').textContent = Math.round(s.occ*100) + '%';
+  document.getElementById('k-adr').textContent = s.nts > 0 ? fmt$(s.adr) : '—';
+}
+
+function renderMonthTabs(){
+  document.getElementById('month-tabs').innerHTML = MONTHS.map((m,i) => {
+    const s = monthStats(year, i);
+    return `<div class="mo-tab${i===month?' active':''}" onclick="month=${i};render()">
+      <div class="mo-tab-name">${m}</div>
+      <div class="mo-tab-rev">${s.rev > 0 ? fmt$(s.rev) : '—'}</div>
+      <div class="mo-tab-nts">${s.nts > 0 ? s.nts+' nts' : '0 nts'}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderCal(){
+  const first = new Date(year, month, 1).getDay();
+  const dim = MDAYS[month] + (month===1 && year%4===0 ? 1 : 0);
+  let html = DAYS.map(d=>`<div class="cal-dh">${d}</div>`).join('');
+  for(let i=0; i<first; i++) html += '<div class="cal-day empty"></div>';
+  for(let d=1; d<=dim; d++){
+    const rs = getDayRes(year, month, d);
+    const r = rs[0];
+    const cls = r ? (isOwner(r) ? 'owner-block' : 'booked') : '';
+    html += `<div class="cal-day ${cls}" onclick="clickDay(${d})">
+      <div class="cal-dn">${d}</div>
+      ${r ? `<div class="cal-chip${isOwner(r)?' owner':''}">${isOwner(r)?'Owner':r.guest.split(' ')[0]}</div>` : ''}
+      ${r&&!isOwner(r) ? `<div class="cal-rate">$${r.rate.toLocaleString()}/nt</div>` : ''}
+    </div>`;
+  }
+  document.getElementById('cal-grid').innerHTML = html;
+}
+
+function renderResList(){
+  const all = getList(year).slice().sort((a,b)=>a.in.localeCompare(b.in));
+  const el = document.getElementById('res-list');
+  if(!all.length){ el.innerHTML = '<div class="empty-msg">No reservations yet.</div>'; return; }
+  el.innerHTML = all.map(r => {
+    const n = nights(r), rev = revenue(r);
+    const ci = r.in.slice(5).replace('-','/'), co = r.out.slice(5).replace('-','/');
+    return `<div class="res-item">
+      <div class="res-dot${isOwner(r)?' owner':''}"></div>
+      <div class="res-meta">
+        <div class="res-guest">${r.guest}</div>
+        <div class="res-dates">${ci} → ${co} · ${n} nights</div>
+      </div>
+      <div class="res-amount">${rev > 0 ? fmt$(rev) : 'Block'}</div>
+      <button class="del-btn" onclick="deleteRes('${r.id}')" title="Remove">×</button>
+    </div>`;
+  }).join('');
+}
+
+function renderAnnual(){
+  const revs = MONTHS.map((_,i) => monthStats(year,i).rev);
+  const total = revs.reduce((a,b)=>a+b,0);
+  const maxR = Math.max(...revs, 1);
+  document.getElementById('annual-total').textContent = total > 0 ? 'Total: ' + fmt$(total) : '';
+  document.getElementById('bar-chart').innerHTML = revs.map(r => {
+    const h = Math.max(Math.round((r/maxR)*68), r>0?4:3);
+    return `<div class="bar-col" style="align-self:end">
+      <div class="bar-fill${r===0?' empty':''}" style="height:${h}px"></div>
+    </div>`;
+  }).join('');
+  document.getElementById('bar-labels').innerHTML = MSHORT.map(m=>`<div class="bml">${m}</div>`).join('');
+}
+
+function clickDay(d){
+  const pad = n => String(n).padStart(2,'0');
+  const dateStr = `${year}-${pad(month+1)}-${pad(d)}`;
+  const outDate = new Date(year, month, d+3);
+  const outStr = `${outDate.getFullYear()}-${pad(outDate.getMonth()+1)}-${pad(outDate.getDate())}`;
+  document.getElementById('f-in').value = dateStr;
+  document.getElementById('f-out').value = outStr;
+  document.getElementById('f-guest').focus();
+}
+
+function addRes(){
+  const ci = document.getElementById('f-in').value;
+  const co = document.getElementById('f-out').value;
+  const guest = document.getElementById('f-guest').value.trim() || 'Guest';
+  const rate = parseFloat(document.getElementById('f-rate').value) || 0;
+  if(!ci||!co||ci>=co){ alert('Please enter valid check-in and check-out dates.'); return; }
+  const y = ci.slice(0,4);
+  if(!data[y]) data[y] = [];
+  data[y].push({in:ci, out:co, guest, rate, id: Date.now().toString(36)+Math.random().toString(36).slice(2)});
+  document.getElementById('f-guest').value = '';
+  document.getElementById('f-rate').value = '';
+  render();
+}
+
+function deleteRes(id){
+  Object.keys(data).forEach(y => { data[y] = data[y].filter(r => r.id !== id); });
+  render();
+}
+
+function changeYear(d){
+  year += d;
+  if(!data[String(year)]) data[String(year)] = [];
+  render();
+}
+
+function exportCSV(){
+  const rows = [['Guest','Check-in','Check-out','Nights','Nightly Rate','Total Revenue','Type']];
+  getList(year).slice().sort((a,b)=>a.in.localeCompare(b.in)).forEach(r => {
+    rows.push([r.guest, r.in, r.out, nights(r), r.rate||0, revenue(r), isOwner(r)?'Owner Block':'Reservation']);
+  });
+  const csv = rows.map(r=>r.map(v=>`"${v}"`).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = `Valley_Vista_Reservations_${year}.csv`;
+  a.click();
+}
+
+function generateFiles(){
+  const all = getList(year).slice().sort((a,b)=>a.in.localeCompare(b.in));
+  if(!all.length){ alert('Add reservations before generating files.'); return; }
+  const s = yearStats(year);
+  const monthly = MONTHS.map((_,i)=>{ const ms=monthStats(year,i); return MSHORT[i]+': $'+Math.round(ms.rev).toLocaleString()+' ('+ms.nts+' nts)'; }).join(', ');
+  const msg = 'Generate the Valley Vista PDF projection and Excel reservation log for '+year+'. Here is the reservation data: '+JSON.stringify(all)+'. Annual stats: Revenue $'+Math.round(s.rev).toLocaleString()+', '+s.nts+' occupied nights, '+Math.round(s.occ*100)+'% occupancy, $'+Math.round(s.adr)+' ADR. Monthly breakdown: '+monthly;
+  navigator.clipboard.writeText(msg).then(()=>{
+    alert('Reservation data copied to clipboard!\n\nPaste it into your Claude chat to generate the PDF + Excel files.');
+  }).catch(()=>{
+    const ta = document.createElement('textarea');
+    ta.value = msg; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    alert('Reservation data copied to clipboard!\n\nPaste it into your Claude chat to generate the PDF + Excel files.');
+  });
+}
+
+function saveHTML() {
+  // Bake current reservation data into a fresh copy of the page
+  const script = `\n
+// Preloaded reservations
+data = {"2026":[{"in":"2026-02-04","out":"2026-02-09","guest":"WMPO Guest","rate":20000,"id":"r003"},{"in":"2026-02-11","out":"2026-03-11","guest":"Month Stay Guest","rate":5000,"id":"r004"},{"in":"2026-03-19","out":"2026-03-26","guest":"Guest","rate":10000,"id":"r006"},{"in":"2026-05-07","out":"2026-05-10","guest":"Guest","rate":8000,"id":"r011"},{"in":"2026-06-18","out":"2026-06-21","guest":"Guest","rate":5000,"id":"r013"},{"in":"2026-10-08","out":"2026-10-11","guest":"Guest","rate":8000,"id":"r014"},{"in":"2026-12-22","out":"2026-12-27","guest":"Holiday Guest","rate":15000,"id":"r019"},{"in":"2026-12-29","out":"2027-01-02","guest":"New Years Guest","rate":15000,"id":"r020"},{"in":"2026-01-21","out":"2026-01-27","guest":"Guest","rate":8000,"id":"mow97pin40oa4p8izrp"},{"in":"2026-01-15","out":"2026-01-19","guest":"Guest","rate":10000,"id":"mow988frtl0k4my7zuf"},{"in":"2026-03-12","out":"2026-03-16","guest":"Guest","rate":12000,"id":"mow9eun77m21p353s4s"},{"in":"2026-03-27","out":"2026-03-30","guest":"Guest","rate":12000,"id":"mow9fsl4duv9t7op0vs"},{"in":"2026-04-02","out":"2026-04-07","guest":"Guest","rate":10000,"id":"mow9gumsg961rfct87m"},{"in":"2026-04-24","out":"2026-04-28","guest":"Guest","rate":8000,"id":"mow9hhfri4tmg6xl75a"},{"in":"2026-10-21","out":"2026-10-26","guest":"Guest","rate":6000,"id":"mow9iixrobaniq7l3n"},{"in":"2026-11-05","out":"2026-11-09","guest":"Guest","rate":8000,"id":"mow9l70jq36xqf7db8"},{"in":"2026-11-24","out":"2026-11-29","guest":"Thanksgiving Guest","rate":12000,"id":"mow9mjpvtfywt8z03tk"},{"in":"2026-12-05","out":"2026-12-12","guest":"Guest","rate":6000,"id":"mow9n3z94fx2ec4l5yx"}]};
+render();
+\n`;
+  let html = document.documentElement.outerHTML;
+  // Replace the existing preloaded block + render() with current data
+  html = html.replace(/\/\/ Preloaded reservations[\s\S]*?render\(\);/, script);
+  const blob = new Blob(['<!DOCTYPE html>\n' + html], { type: 'text/html;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'Valley_Vista_Reservation_Builder.html';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+// Preloaded reservations
+data['2026'] = [
+  {in:'2026-01-15',out:'2026-01-19',guest:'Guest',rate:12000,id:'r001'},
+  {in:'2026-01-21',out:'2026-01-28',guest:'Guest',rate:10000,id:'r002'},
+  {in:'2026-02-04',out:'2026-02-09',guest:'WMPO Guest',rate:20000,id:'r003'},
+  {in:'2026-02-11',out:'2026-03-11',guest:'Month Stay Guest',rate:5000,id:'r004'},
+  {in:'2026-03-12',out:'2026-03-16',guest:'Guest',rate:15000,id:'r005'},
+  {in:'2026-03-19',out:'2026-03-26',guest:'Guest',rate:10000,id:'r006'},
+  {in:'2026-03-27',out:'2026-03-30',guest:'Guest',rate:18000,id:'r007'},
+  {in:'2026-04-02',out:'2026-04-07',guest:'Guest',rate:15000,id:'r008'},
+  {in:'2026-04-09',out:'2026-04-12',guest:'Guest',rate:15000,id:'r009'},
+  {in:'2026-04-24',out:'2026-04-28',guest:'Guest',rate:12000,id:'r010'},
+  {in:'2026-05-07',out:'2026-05-10',guest:'Guest',rate:8000,id:'r011'},
+  {in:'2026-05-28',out:'2026-05-31',guest:'Guest',rate:6000,id:'r012'},
+  {in:'2026-06-18',out:'2026-06-21',guest:'Guest',rate:5000,id:'r013'},
+  {in:'2026-10-08',out:'2026-10-11',guest:'Guest',rate:8000,id:'r014'},
+  {in:'2026-10-21',out:'2026-10-27',guest:'Guest',rate:8000,id:'r015'},
+  {in:'2026-11-05',out:'2026-11-09',guest:'Guest',rate:10000,id:'r016'},
+  {in:'2026-11-23',out:'2026-11-30',guest:'Thanksgiving',rate:12000,id:'r017'},
+  {in:'2026-12-01',out:'2026-12-15',guest:'Guest',rate:6000,id:'r018'},
+  {in:'2026-12-22',out:'2026-12-27',guest:'Holiday Guest',rate:15000,id:'r019'},
+  {in:'2026-12-29',out:'2027-01-02',guest:'New Years Guest',rate:15000,id:'r020'},
+];
+
+render();
+</script>
+
+
+</body></html>
