@@ -28,19 +28,29 @@
 
   body {
     font-family: 'DM Sans', sans-serif;
-    background: var(--cream);
+    background: var(--cream-dark);
     color: var(--ink);
     min-height: 100vh;
+    padding: 32px;
   }
 
   /* ── Page shell ── */
-  .page { max-width: 1400px; margin: 0 auto; padding: 0 40px 80px; }
+  .page {
+    max-width: 1320px;
+    margin: 0 auto;
+    background: var(--cream);
+    border-radius: 12px;
+    border: 1px solid rgba(160,94,66,0.18);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.10);
+    overflow: hidden;
+    padding: 0 0 48px;
+  }
 
   /* ── Header ── */
   .site-header {
     background: var(--terra);
-    margin: 0 -32px;
-    padding: 28px 32px 26px;
+    margin: 0;
+    padding: 22px 36px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -81,8 +91,8 @@
   /* ── Year nav ── */
   .year-bar {
     background: var(--terra-dark);
-    margin: 0 -32px;
-    padding: 10px 32px;
+    margin: 0;
+    padding: 10px 36px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -453,6 +463,18 @@
     .month-tabs { grid-template-columns: repeat(4, 1fr); }
     .kpi-strip { grid-template-columns: repeat(2, 1fr); }
   }
+
+  /* ── Read-only mode ── */
+  .del-btn { display: none !important; }
+  .export-group { display: none !important; }
+  .yr-btn { display: none !important; }
+  .form-card:not(.res-list-card) { display: none !important; }
+  [style*="border-top:0.5px"] { display: none !important; }
+  .cal-day { cursor: default !important; }
+  .cal-day:hover { border-color: var(--border) !important; }
+  .cal-day.booked:hover { border-color: var(--terra-light) !important; }
+  .cal-hint { display: none; }
+  .sidebar { display: block; }
 </style>
 </head>
 <body>
@@ -482,30 +504,11 @@
 
   <!-- Year bar + exports -->
   <div class="year-bar">
-    <div class="year-nav">
-      <button class="yr-btn" onclick="changeYear(-1)">←</button>
-      <div class="yr-display" id="yr-display">2026</div>
-      <button class="yr-btn" onclick="changeYear(1)">→</button>
+    <div class="year-nav"><div class="yr-display" id="yr-display">2026</div></div>
     </div>
-    <div class="export-group">
-      <button class="exp-btn" onclick="exportCSV()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-        Export CSV
-      </button>
-      <button class="exp-btn" onclick="saveHTML()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-        Save HTML
-      </button>
-      <button class="exp-btn" onclick="window.print()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-        Print / Save PDF
-      </button>
-      <button class="exp-btn primary" onclick="generateFiles()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-        Generate PDF + Excel ↗
-      </button>
-    </div>
-  </div>
+
+  <!-- Content wrapper with padding -->
+  <div style="padding: 0 36px;">
 
   <!-- KPIs -->
   <div class="kpi-strip">
@@ -577,127 +580,127 @@
           <div class="cal-hint">Click a day to pre-fill check-in</div>
         </div>
         <div class="cal-body">
-          <div class="cal-grid" id="cal-grid"><div class="cal-dh">Sun</div><div class="cal-dh">Mon</div><div class="cal-dh">Tue</div><div class="cal-dh">Wed</div><div class="cal-dh">Thu</div><div class="cal-dh">Fri</div><div class="cal-dh">Sat</div><div class="cal-day empty"></div><div class="cal-day empty"></div><div class="cal-day " onclick="clickDay(1)">
+          <div class="cal-grid" id="cal-grid"><div class="cal-dh">Sun</div><div class="cal-dh">Mon</div><div class="cal-dh">Tue</div><div class="cal-dh">Wed</div><div class="cal-dh">Thu</div><div class="cal-dh">Fri</div><div class="cal-dh">Sat</div><div class="cal-day empty"></div><div class="cal-day empty"></div><div class="cal-day " >
       <div class="cal-dn">1</div>
       
       
-    </div><div class="cal-day " onclick="clickDay(2)">
+    </div><div class="cal-day " >
       <div class="cal-dn">2</div>
       
       
-    </div><div class="cal-day " onclick="clickDay(3)">
+    </div><div class="cal-day " >
       <div class="cal-dn">3</div>
       
       
-    </div><div class="cal-day " onclick="clickDay(4)">
+    </div><div class="cal-day " >
       <div class="cal-dn">4</div>
       
       
-    </div><div class="cal-day booked" onclick="clickDay(5)">
+    </div><div class="cal-day booked" >
       <div class="cal-dn">5</div>
       <div class="cal-chip">Guest</div>
       <div class="cal-rate">$6,000/nt</div>
-    </div><div class="cal-day booked" onclick="clickDay(6)">
+    </div><div class="cal-day booked" >
       <div class="cal-dn">6</div>
       <div class="cal-chip">Guest</div>
       <div class="cal-rate">$6,000/nt</div>
-    </div><div class="cal-day booked" onclick="clickDay(7)">
+    </div><div class="cal-day booked" >
       <div class="cal-dn">7</div>
       <div class="cal-chip">Guest</div>
       <div class="cal-rate">$6,000/nt</div>
-    </div><div class="cal-day booked" onclick="clickDay(8)">
+    </div><div class="cal-day booked" >
       <div class="cal-dn">8</div>
       <div class="cal-chip">Guest</div>
       <div class="cal-rate">$6,000/nt</div>
-    </div><div class="cal-day booked" onclick="clickDay(9)">
+    </div><div class="cal-day booked" >
       <div class="cal-dn">9</div>
       <div class="cal-chip">Guest</div>
       <div class="cal-rate">$6,000/nt</div>
-    </div><div class="cal-day booked" onclick="clickDay(10)">
+    </div><div class="cal-day booked" >
       <div class="cal-dn">10</div>
       <div class="cal-chip">Guest</div>
       <div class="cal-rate">$6,000/nt</div>
-    </div><div class="cal-day booked" onclick="clickDay(11)">
+    </div><div class="cal-day booked" >
       <div class="cal-dn">11</div>
       <div class="cal-chip">Guest</div>
       <div class="cal-rate">$6,000/nt</div>
-    </div><div class="cal-day " onclick="clickDay(12)">
+    </div><div class="cal-day " >
       <div class="cal-dn">12</div>
       
       
-    </div><div class="cal-day " onclick="clickDay(13)">
+    </div><div class="cal-day " >
       <div class="cal-dn">13</div>
       
       
-    </div><div class="cal-day " onclick="clickDay(14)">
+    </div><div class="cal-day " >
       <div class="cal-dn">14</div>
       
       
-    </div><div class="cal-day " onclick="clickDay(15)">
+    </div><div class="cal-day " >
       <div class="cal-dn">15</div>
       
       
-    </div><div class="cal-day " onclick="clickDay(16)">
+    </div><div class="cal-day " >
       <div class="cal-dn">16</div>
       
       
-    </div><div class="cal-day " onclick="clickDay(17)">
+    </div><div class="cal-day " >
       <div class="cal-dn">17</div>
       
       
-    </div><div class="cal-day " onclick="clickDay(18)">
+    </div><div class="cal-day " >
       <div class="cal-dn">18</div>
       
       
-    </div><div class="cal-day " onclick="clickDay(19)">
+    </div><div class="cal-day " >
       <div class="cal-dn">19</div>
       
       
-    </div><div class="cal-day " onclick="clickDay(20)">
+    </div><div class="cal-day " >
       <div class="cal-dn">20</div>
       
       
-    </div><div class="cal-day " onclick="clickDay(21)">
+    </div><div class="cal-day " >
       <div class="cal-dn">21</div>
       
       
-    </div><div class="cal-day booked" onclick="clickDay(22)">
+    </div><div class="cal-day booked" >
       <div class="cal-dn">22</div>
       <div class="cal-chip">Holiday</div>
       <div class="cal-rate">$15,000/nt</div>
-    </div><div class="cal-day booked" onclick="clickDay(23)">
+    </div><div class="cal-day booked" >
       <div class="cal-dn">23</div>
       <div class="cal-chip">Holiday</div>
       <div class="cal-rate">$15,000/nt</div>
-    </div><div class="cal-day booked" onclick="clickDay(24)">
+    </div><div class="cal-day booked" >
       <div class="cal-dn">24</div>
       <div class="cal-chip">Holiday</div>
       <div class="cal-rate">$15,000/nt</div>
-    </div><div class="cal-day booked" onclick="clickDay(25)">
+    </div><div class="cal-day booked" >
       <div class="cal-dn">25</div>
       <div class="cal-chip">Holiday</div>
       <div class="cal-rate">$15,000/nt</div>
-    </div><div class="cal-day booked" onclick="clickDay(26)">
+    </div><div class="cal-day booked" >
       <div class="cal-dn">26</div>
       <div class="cal-chip">Holiday</div>
       <div class="cal-rate">$15,000/nt</div>
-    </div><div class="cal-day " onclick="clickDay(27)">
+    </div><div class="cal-day " >
       <div class="cal-dn">27</div>
       
       
-    </div><div class="cal-day " onclick="clickDay(28)">
+    </div><div class="cal-day " >
       <div class="cal-dn">28</div>
       
       
-    </div><div class="cal-day booked" onclick="clickDay(29)">
+    </div><div class="cal-day booked" >
       <div class="cal-dn">29</div>
       <div class="cal-chip">New</div>
       <div class="cal-rate">$15,000/nt</div>
-    </div><div class="cal-day booked" onclick="clickDay(30)">
+    </div><div class="cal-day booked" >
       <div class="cal-dn">30</div>
       <div class="cal-chip">New</div>
       <div class="cal-rate">$15,000/nt</div>
-    </div><div class="cal-day booked" onclick="clickDay(31)">
+    </div><div class="cal-day booked" >
       <div class="cal-dn">31</div>
       <div class="cal-chip">New</div>
       <div class="cal-rate">$15,000/nt</div>
@@ -759,7 +762,7 @@
       </div>
 
       <!-- Reservation list -->
-      <div class="form-card">
+      <div class="form-card res-list-card">
         <div class="card-head">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
           <span class="card-head-title">Reservations — <span id="res-yr-lbl" style="font-weight:300;text-transform:none;letter-spacing:0">2026</span></span>
@@ -916,6 +919,7 @@
     </div>
   </div>
 
+  </div><!-- end content wrapper -->
 </div>
 
 <script>
@@ -1045,84 +1049,20 @@ function renderAnnual(){
   document.getElementById('bar-labels').innerHTML = MSHORT.map(m=>`<div class="bml">${m}</div>`).join('');
 }
 
-function clickDay(d){
-  const pad = n => String(n).padStart(2,'0');
-  const dateStr = `${year}-${pad(month+1)}-${pad(d)}`;
-  const outDate = new Date(year, month, d+3);
-  const outStr = `${outDate.getFullYear()}-${pad(outDate.getMonth()+1)}-${pad(outDate.getDate())}`;
-  document.getElementById('f-in').value = dateStr;
-  document.getElementById('f-out').value = outStr;
-  document.getElementById('f-guest').focus();
-}
 
-function addRes(){
-  const ci = document.getElementById('f-in').value;
-  const co = document.getElementById('f-out').value;
-  const guest = document.getElementById('f-guest').value.trim() || 'Guest';
-  const rate = parseFloat(document.getElementById('f-rate').value) || 0;
-  if(!ci||!co||ci>=co){ alert('Please enter valid check-in and check-out dates.'); return; }
-  const y = ci.slice(0,4);
-  if(!data[y]) data[y] = [];
-  data[y].push({in:ci, out:co, guest, rate, id: Date.now().toString(36)+Math.random().toString(36).slice(2)});
-  document.getElementById('f-guest').value = '';
-  document.getElementById('f-rate').value = '';
-  render();
-}
 
-function deleteRes(id){
-  Object.keys(data).forEach(y => { data[y] = data[y].filter(r => r.id !== id); });
-  render();
-}
+
+
+
 
 function changeYear(d){
   year += d;
   if(!data[String(year)]) data[String(year)] = [];
   render();
 }
-
-function exportCSV(){
-  const rows = [['Guest','Check-in','Check-out','Nights','Nightly Rate','Total Revenue','Type']];
-  getList(year).slice().sort((a,b)=>a.in.localeCompare(b.in)).forEach(r => {
-    rows.push([r.guest, r.in, r.out, nights(r), r.rate||0, revenue(r), isOwner(r)?'Owner Block':'Reservation']);
-  });
-  const csv = rows.map(r=>r.map(v=>`"${v}"`).join(',')).join('\n');
-  const a = document.createElement('a');
-  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-  a.download = `Valley_Vista_Reservations_${year}.csv`;
-  a.click();
-}
-
-function generateFiles(){
-  const all = getList(year).slice().sort((a,b)=>a.in.localeCompare(b.in));
-  if(!all.length){ alert('Add reservations before generating files.'); return; }
-  const s = yearStats(year);
-  const monthly = MONTHS.map((_,i)=>{ const ms=monthStats(year,i); return MSHORT[i]+': $'+Math.round(ms.rev).toLocaleString()+' ('+ms.nts+' nts)'; }).join(', ');
-  const msg = 'Generate the Valley Vista PDF projection and Excel reservation log for '+year+'. Here is the reservation data: '+JSON.stringify(all)+'. Annual stats: Revenue $'+Math.round(s.rev).toLocaleString()+', '+s.nts+' occupied nights, '+Math.round(s.occ*100)+'% occupancy, $'+Math.round(s.adr)+' ADR. Monthly breakdown: '+monthly;
-  navigator.clipboard.writeText(msg).then(()=>{
-    alert('Reservation data copied to clipboard!\n\nPaste it into your Claude chat to generate the PDF + Excel files.');
-  }).catch(()=>{
-    const ta = document.createElement('textarea');
-    ta.value = msg; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
-    alert('Reservation data copied to clipboard!\n\nPaste it into your Claude chat to generate the PDF + Excel files.');
-  });
-}
-
-function saveHTML() {
-  const sentinel = document.getElementById('saved-data');
-  sentinel.textContent = '\ndata = ' + JSON.stringify(data) + ';\nrender();\n';
-  const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
-  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'Valley_Vista_Reservation_Builder.html';
-  a.click();
-  URL.revokeObjectURL(a.href);
-}
-
 render();
 </script>
 
-<!-- SAVE_DATA_SENTINEL -->
 <script id="saved-data">
 data = {"2026":[{"in":"2026-02-04","out":"2026-02-09","guest":"WMPO Guest","rate":20000,"id":"r003"},{"in":"2026-02-11","out":"2026-03-11","guest":"Month Stay Guest","rate":5000,"id":"r004"},{"in":"2026-03-19","out":"2026-03-26","guest":"Guest","rate":10000,"id":"r006"},{"in":"2026-05-07","out":"2026-05-10","guest":"Guest","rate":8000,"id":"r011"},{"in":"2026-06-18","out":"2026-06-21","guest":"Guest","rate":5000,"id":"r013"},{"in":"2026-10-08","out":"2026-10-11","guest":"Guest","rate":8000,"id":"r014"},{"in":"2026-12-22","out":"2026-12-27","guest":"Holiday Guest","rate":15000,"id":"r019"},{"in":"2026-12-29","out":"2027-01-02","guest":"New Years Guest","rate":15000,"id":"r020"},{"in":"2026-01-21","out":"2026-01-27","guest":"Guest","rate":8000,"id":"mow97pin40oa4p8izrp"},{"in":"2026-01-15","out":"2026-01-19","guest":"Guest","rate":10000,"id":"mow988frtl0k4my7zuf"},{"in":"2026-03-12","out":"2026-03-16","guest":"Guest","rate":12000,"id":"mow9eun77m21p353s4s"},{"in":"2026-03-27","out":"2026-03-30","guest":"Guest","rate":12000,"id":"mow9fsl4duv9t7op0vs"},{"in":"2026-04-02","out":"2026-04-07","guest":"Guest","rate":10000,"id":"mow9gumsg961rfct87m"},{"in":"2026-04-24","out":"2026-04-28","guest":"Guest","rate":8000,"id":"mow9hhfri4tmg6xl75a"},{"in":"2026-10-21","out":"2026-10-26","guest":"Guest","rate":6000,"id":"mow9iixrobaniq7l3n"},{"in":"2026-11-05","out":"2026-11-09","guest":"Guest","rate":8000,"id":"mow9l70jq36xqf7db8"},{"in":"2026-11-24","out":"2026-11-29","guest":"Thanksgiving Guest","rate":12000,"id":"mow9mjpvtfywt8z03tk"},{"in":"2026-12-05","out":"2026-12-12","guest":"Guest","rate":6000,"id":"mow9n3z94fx2ec4l5yx"}]};
 render();
